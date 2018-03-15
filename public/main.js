@@ -1,5 +1,12 @@
 const suiteCards = [2,3,4,5,6,7,8,9,10,'J','Q','K','A'];
 
+const valueMap = {
+  'J': 10,
+  'Q': 10,
+  'K': 10,
+  'A': 11
+};
+
 // The game class. Represents game meta-data such as the amount of players, the amount decks in play, and
 // has methods to create those objects.
 class Game {
@@ -127,10 +134,25 @@ class Card {
 
 class Player {
   constructor() {
+
     this.hand = [];
+
     this.score = 0;
+
     this.hit = (gameObj) => {
       gameObj.dealCards(this.index, 0, 1);
+    }
+
+    this.calculateScore = () => {
+      // Reset the score to 0...
+      this.score = 0;
+      this.hand.forEach((card) => {
+        this.score += valueMap[card.value] || card.value;
+        console.log(card.value, this.score);
+      });
+      if(this.score > 21) {
+        this.score = "bust";
+      }
     }
   }
 }
