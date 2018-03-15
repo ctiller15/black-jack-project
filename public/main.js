@@ -1,5 +1,7 @@
 const suiteCards = [2,3,4,5,6,7,8,9,10,'J','Q','K','A'];
 
+// The game class. Represents game meta-data such as the amount of players, the amount decks in play, and
+// has methods to create those objects.
 class Game {
   constructor() {
 
@@ -19,7 +21,9 @@ class Game {
 
     this.createPlayers = (count) => {
       for(var i = 0; i < count; i++) {
-        this.players.push(new Player());
+        let newPlayer = new Player();
+        newPlayer.index = i + 1;
+        this.players.push(newPlayer);
       }
     }
 
@@ -32,11 +36,11 @@ class Game {
 
     // Chooses a player and deals cards to them from a given deck.
     this.dealCards = (playerNum, deckNum, count) => {
-      console.log(this.players[playerNum], this.decks[deckNum]);
-      let temp = this.decks[deckNum].dealCards(2);
-      console.log(temp);
+      // console.log(this.players[playerNum], this.decks[deckNum]);
+      let temp = this.decks[deckNum].dealCards(count);
+      // console.log(temp);
       this.players[playerNum].hand = this.players[playerNum].hand.concat(temp);
-      console.log(this.players[playerNum].hand);
+      // console.log(this.players[playerNum].hand);
     }
 
     this.startGame = (playerCount, deckCount) => {
@@ -51,6 +55,7 @@ class Game {
   }
 }
 
+// A deck class. Represents an individual deck of 52 cards.
 class Deck {
   constructor() {
 
@@ -124,24 +129,18 @@ class Player {
   constructor() {
     this.hand = [];
     this.score = 0;
+    this.hit = (gameObj) => {
+      gameObj.dealCards(this.index, 0, 1);
+    }
   }
 }
 
 // The house is always going to exist.
 // const house = new Player();
 
-// let testDeck = new Deck();
-
-// console.log(testDeck.deck);
-
 let blackJack = new Game();
 blackJack.startGame(2,1);
 
-// blackJack.createDecks(1);
-
-// blackJack.dealCards(0, 0, 2);
-
-// console.log(blackJack.players[0]);
 
 const main = () => {
   document.querySelector('h1').textContent += '?';
