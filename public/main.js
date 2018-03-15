@@ -1,5 +1,46 @@
 const suiteCards = [2,3,4,5,6,7,8,9,10,'J','Q','K','A'];
 
+class Game {
+  constructor() {
+
+    // The current list of players
+    // The first player is always the house.
+    this.players = [new Player(),];
+
+    // The current list of decks
+    this.decks = [];
+
+    // This function creates a bunch of new decks.
+    this.createDecks = (count) => {
+      for(var i = 0; i < count; i++) {
+        this.decks.push(new Deck());
+      }
+    }
+
+    this.createPlayers = (count) => {
+      for(var i = 0; i < count; i++) {
+        this.players.push(new Player());
+      }
+    }
+
+    // Shuffles every single deck.
+    this.shuffleDecks = () => {
+      for(let i = 0 ; i < this.decks.length; i++) {
+        this.decks[i].shuffleDeck();
+      }
+    }
+
+    this.dealCards = (playerNum, deckNum, count) => {
+      console.log(this.players[playerNum], this.decks[deckNum]);
+      let temp = this.decks[deckNum].dealCards(2);
+      console.log(temp);
+      this.players[playerNum].hand = this.players[playerNum].hand.concat(temp);
+      console.log(this.players[playerNum].hand);
+    }
+
+  }
+}
+
 class Deck {
   constructor() {
 
@@ -45,7 +86,7 @@ class Deck {
       for(let i = 0; i < num; i++) {
         dealtCards.push(this.deck.pop());
       }
-      console.log(dealtCards);
+      return(dealtCards);
     }
 
     // All of the suites with their respective cards.
@@ -69,11 +110,27 @@ class Card {
   }
 }
 
-let testDeck = new Deck();
+class Player {
+  constructor() {
+    this.hand = [];
+    this.score = 0;
+  }
+}
 
-console.log(testDeck.deck);
+// The house is always going to exist.
+// const house = new Player();
 
+// let testDeck = new Deck();
 
+// console.log(testDeck.deck);
+
+let blackJack = new Game();
+
+blackJack.createDecks(1);
+
+blackJack.dealCards(0, 0, 2);
+
+console.log(blackJack.players[0]);
 
 const main = () => {
   document.querySelector('h1').textContent += '?';
