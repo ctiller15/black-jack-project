@@ -30,12 +30,22 @@ class Game {
       }
     }
 
+    // Chooses a player and deals cards to them from a given deck.
     this.dealCards = (playerNum, deckNum, count) => {
       console.log(this.players[playerNum], this.decks[deckNum]);
       let temp = this.decks[deckNum].dealCards(2);
       console.log(temp);
       this.players[playerNum].hand = this.players[playerNum].hand.concat(temp);
       console.log(this.players[playerNum].hand);
+    }
+
+    this.startGame = (playerCount, deckCount) => {
+      this.createPlayers(playerCount);
+      this.createDecks(deckCount);
+      this.shuffleDecks();
+      for(let i = 0; i < playerCount + 1; i++) {
+        this.dealCards(i, 0, 2);
+      }
     }
 
   }
@@ -125,12 +135,13 @@ class Player {
 // console.log(testDeck.deck);
 
 let blackJack = new Game();
+blackJack.startGame(2,1);
 
-blackJack.createDecks(1);
+// blackJack.createDecks(1);
 
-blackJack.dealCards(0, 0, 2);
+// blackJack.dealCards(0, 0, 2);
 
-console.log(blackJack.players[0]);
+// console.log(blackJack.players[0]);
 
 const main = () => {
   document.querySelector('h1').textContent += '?';
