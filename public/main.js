@@ -7,6 +7,13 @@ const valueMap = {
   'A': 11
 };
 
+// // Calculates the maximum value of an array.
+// const max = (...arr) => {
+//   return arr.reduce( (a, b) => {
+//     return a >= b ? a : b;
+//   });
+// }
+
 // The game class. Represents game meta-data such as the amount of players, the amount decks in play, and
 // has methods to create those objects.
 class Game {
@@ -57,6 +64,31 @@ class Game {
       for(let i = 0; i < playerCount + 1; i++) {
         this.dealCards(i, 0, 2);
       }
+    }
+
+    this.calculateWinner = () => {
+      let scoreArray = this.players.map( (player) => {
+        player.calculateScore();
+        console.log(player.score);
+        return player.score;
+      });
+
+      let winner = "";
+      let max = 0;
+      for(let i = 0; i < scoreArray.length; i++) {
+        if(scoreArray[i] !== "bust") {
+          if(scoreArray[i] > max) {
+            winner = `${i}`;
+            max = scoreArray[i];
+          }
+        }
+      }
+
+      let winString = `${winner === '0' ? 'The house' : `player ${winner}`} wins!!!`;
+
+      console.log(winString);
+
+
     }
 
   }
@@ -163,7 +195,6 @@ class Player {
 
 let blackJack = new Game();
 blackJack.startGame(2,1);
-
 
 const main = () => {
   document.querySelector('h1').textContent += '?';
