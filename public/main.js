@@ -141,6 +141,7 @@ class Player {
 
     this.hit = (gameObj) => {
       gameObj.dealCards(this.index, 0, 1);
+      this.calculateScore();
     }
 
     this.calculateScore = () => {
@@ -148,7 +149,7 @@ class Player {
       this.score = 0;
       this.hand.forEach((card) => {
         this.score += valueMap[card.value] || card.value;
-        console.log(card.value, this.score);
+        // console.log(card.value, this.score);
       });
       if(this.score > 21) {
         this.score = "bust";
