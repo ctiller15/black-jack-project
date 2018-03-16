@@ -76,11 +76,8 @@ class Game {
 
     // Chooses a player and deals cards to them from a given deck.
     this.dealCards = (playerNum, deckNum, count) => {
-      // console.log(this.players[playerNum], this.decks[deckNum]);
       let temp = this.decks[deckNum].dealCards(count);
-      // console.log(temp);
       this.players[playerNum].hand = this.players[playerNum].hand.concat(temp);
-      // console.log(this.players[playerNum].hand);
     }
 
     this.startGame = (playerCount, deckCount) => {
@@ -91,11 +88,6 @@ class Game {
         this.dealCards(i, 0, 2);
       }
       this.currentTurn++;
-      // console.log(this.players[this.currentTurn].playerElement.childNodes[1][0]);
-      // console.log(this.players[this.currentTurn]);
-      // this.players[this.currentTurn].playerElement.childNodes[1][0].removeAttribute("disabled");
-      // this.players[this.currentTurn].playerElement.childNodes[1][1].removeAttribute("disabled");
-      // this.players[this.currentTurn]
       this.enablePlayer();
     }
     this.enablePlayer = () => {
@@ -120,8 +112,6 @@ class Game {
     }
 
     this.checkGame = () => {
-      // console.log(this.players.length);
-      // console.log(this.currentTurn + 1);
       this.disablePlayer();
       if(this.players.length === this.currentTurn + 1) {
         console.log("Game ending! It's the house's turn!");
@@ -133,11 +123,6 @@ class Game {
     }
 
     this.calculateWinners = () => {
-      // let scoreArray = this.players.map( (player) => {
-      //   player.calculateScore();
-      //   console.log(player.score);
-      //   return player.score;
-      // });
       let scoreArray = this.checkScore();
 
       // let winner = "";
@@ -149,16 +134,11 @@ class Game {
           if(scoreArray[i] > dealer) {
             winners.push(i);
           }
-          // if(scoreArray[i] > max) {
-          //   winner = `${i}`;
-          //   max = scoreArray[i];
-          // }
         }
       }
-      console.log(winners);
+      // console.log(winners);
 
       let winString = `${winners.length === 0 ? 'The house' : `player(s) ${winners} win!!!`}`;
-      // let winString = `${winner === '0' ? 'The house' : `player ${winner}`} wins!!!`;
 
       console.log(winString);
 
@@ -249,10 +229,6 @@ class Player {
 
     this.isCurrentlyTurn = false;
 
-    // this.takeTurn = () => {
-
-    // }
-
     this.hit = (gameObj) => {
       if(this.hand.length < 5 && this.score !== "bust") {
         gameObj.dealCards(this.index, 0, 1);
@@ -262,30 +238,18 @@ class Player {
 
     this.calculateScore = () => {
       // Reset the score to 0...
-      // let scoreArray = [];
       this.score = 0;
       this.hand.forEach((card) => {
-        // if(card.value === "A") {
-        //   console.log("Ace! 1 or 11!");
-        // }
         this.score += valueMap[card.value] || card.value;
-        // console.log(card.value, this.score);
       });
       console.log(this.score);
       if(this.score > 21) {
+        // If they bust, immediately check and end their turn.
         this.score = "bust";
         this.hasTakenTurn = true;
-        console.log(this.hasTakenTurn);
-        // If they bust, immediately check and end their turn.
-        // blackJackGames[gameNum].checkGame();
         blackJackGames[gameNum].disablePlayer();
-        console.log("Starts here!");
-        // console.log(blackJackGames);
-        // console.log(blackJackGames[0].players, blackJackGames[0].currentTurn);
-        // blackJackGames[gameNum].currentTurn++;
         console.log(`on turn: ${blackJackGames[gameNum].currentTurn}`);
       }
-      // console.log(this.score, this.hand);
       console.log("Ends here!");
     }
 
@@ -301,12 +265,6 @@ class Player {
     }
   }
 }
-
-// The house is always going to exist.
-// const house = new Player();
-
-// let blackJack = new Game();
-// blackJack.startGame(2,1);
 
 // The game logic starts here:
 const beginGame = () => {
@@ -326,17 +284,11 @@ const beginGame = () => {
 }
 
 const hit = (event) => {
-  // debugger;
   playerInd = event.target.getAttribute('data-playerId');
-  console.log(playerInd);
   if(!blackJackGames[gameNum].players[playerInd].hasTakenTurn) {
 
     // "hit" a particular player.
     blackJackGames[gameNum].players[playerInd].hit(blackJackGames[gameNum]);
-    // console.log(blackJackGames[gameNum].players[playerInd]);
-    // console.log(blackJackGames[0].players.length, blackJackGames[0].currentTurn + 1);
-    console.log("What do we do...?");
-    console.log(blackJackGames[0].players.length, blackJackGames[0].currentTurn);
     if(blackJackGames[0].players.length === blackJackGames[0].currentTurn + 1) {
       stay(event);
     } else if(blackJackGames[gameNum].players[blackJackGames[gameNum].currentTurn].score === "bust"){
@@ -352,14 +304,8 @@ const hit = (event) => {
 
 const stay = (event) => {
   playerInd = event.target.getAttribute('data-playerId');
-  console.log(playerInd);
 
   blackJackGames[gameNum].players[playerInd].hasTakenTurn = true;
-  console.log(blackJackGames[gameNum].players[playerInd]);
-  // blackJackGames[gameNum].disablePlayer();
-  // blackJackGames[gameNum].currentTurn++;
-  // blackJackGames[gameNum].enablePlayer();
-  console.log("running checkGame!!!");
   blackJackGames[gameNum].checkGame();
 }
 
