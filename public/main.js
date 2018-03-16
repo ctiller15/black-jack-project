@@ -20,6 +20,7 @@ const valueMap = {
 const introScreen = document.querySelector(".introduction-screen");
 const playerCountInput = document.querySelector(".players-count");
 const deckCountInput = document.querySelector(".decks-count");
+const gameScreen = document.querySelector(".game-screen");
 
 // The game class. Represents game meta-data such as the amount of players, the amount decks in play, and
 // has methods to create those objects.
@@ -45,6 +46,8 @@ class Game {
         let newPlayer = new Player();
         newPlayer.index = i + 1;
         this.players.push(newPlayer);
+        
+        gameScreen.innerHTML += newPlayer.createTile();
       }
     }
 
@@ -201,6 +204,17 @@ class Player {
       }
       console.log(this.score, this.hand);
     }
+
+    this.createTile = () => {
+      // create a tile for a player with their id, and then return it.
+      let tile = `<section class="player-board" data-playerId='${this.index}'>
+                      <form>
+                      <button type="button" onclick="hit(event)" data-playerId="${this.index}">Hit</button>
+                      <button type="button" onclick="stay(event)" data-playerId="${this.index}">Stay</button>
+                    </form>
+                  </section>`;
+      return tile;
+    }
   }
 }
 
@@ -227,17 +241,16 @@ const beginGame = () => {
 }
 
 const hit = (event) => {
+  playerInd = event.target.getAttribute('data-playerId');
+  console.log(playerInd);
   if(!blackJackGames[gameNum].players[playerInd].hasTakenTurn) {
-    playerInd = event.target.getAttribute('data-playerId');
-    console.log(playerInd);
-  
+
     // "hit" a particular player.
     blackJackGames[gameNum].players[playerInd].hit(blackJackGames[gameNum]);
     console.log(blackJackGames[gameNum].players[playerInd]);
   } else {
     console.log("Player has already finished their turn!");
   }
-
 }
 
 const stay = (event) => {
