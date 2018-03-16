@@ -18,6 +18,8 @@ const valueMap = {
 
 // For the home menu:
 const introScreen = document.querySelector(".introduction-screen");
+
+// For the players and their sections:
 const playerCountInput = document.querySelector(".players-count");
 const deckCountInput = document.querySelector(".decks-count");
 const gameScreen = document.querySelector(".game-screen");
@@ -103,7 +105,8 @@ class Game {
 
     this.disablePlayer = () => {
       this.players[this.currentTurn].playerElement.childNodes[1][0].setAttribute("disabled", "disabled");
-      this.players[this.currentTurn].playerElement.childNodes[1][1].setAttribute("disabled", "disabled");  
+      this.players[this.currentTurn].playerElement.childNodes[1][1].setAttribute("disabled", "disabled");
+      console.log("disabling: " + this.currentTurn);
       // this.checkGame();
     }
 
@@ -140,6 +143,7 @@ class Game {
       // let winner = "";
       let winners = [];
       let dealer = this.players[0].score;
+      console.log(dealer);
       for(let i = 0; i < scoreArray.length; i++) {
         if(scoreArray[i] !== "bust") {
           if(scoreArray[i] > dealer) {
@@ -151,6 +155,7 @@ class Game {
           // }
         }
       }
+      console.log(winners);
 
       let winString = `${winners.length === 0 ? 'The house' : `player(s) ${winners} win!!!`}`;
       // let winString = `${winner === '0' ? 'The house' : `player ${winner}`} wins!!!`;
@@ -249,7 +254,7 @@ class Player {
     // }
 
     this.hit = (gameObj) => {
-      if(this.hand.length < 6 && this.score !== "bust") {
+      if(this.hand.length < 5 && this.score !== "bust") {
         gameObj.dealCards(this.index, 0, 1);
       }
       this.calculateScore();
@@ -257,19 +262,31 @@ class Player {
 
     this.calculateScore = () => {
       // Reset the score to 0...
+      // let scoreArray = [];
       this.score = 0;
       this.hand.forEach((card) => {
+        // if(card.value === "A") {
+        //   console.log("Ace! 1 or 11!");
+        // }
         this.score += valueMap[card.value] || card.value;
         // console.log(card.value, this.score);
       });
+      console.log(this.score);
       if(this.score > 21) {
         this.score = "bust";
         this.hasTakenTurn = true;
         console.log(this.hasTakenTurn);
         // If they bust, immediately check and end their turn.
-        blackJackGames[gameNum].checkGame();
+        // blackJackGames[gameNum].checkGame();
+        blackJackGames[gameNum].disablePlayer();
+        console.log("Starts here!");
+        // console.log(blackJackGames);
+        // console.log(blackJackGames[0].players, blackJackGames[0].currentTurn);
+        // blackJackGames[gameNum].currentTurn++;
+        console.log(`on turn: ${blackJackGames[gameNum].currentTurn}`);
       }
-      console.log(this.score, this.hand);
+      // console.log(this.score, this.hand);
+      console.log("Ends here!");
     }
 
     this.createTile = () => {
@@ -309,16 +326,27 @@ const beginGame = () => {
 }
 
 const hit = (event) => {
+  // debugger;
   playerInd = event.target.getAttribute('data-playerId');
   console.log(playerInd);
   if(!blackJackGames[gameNum].players[playerInd].hasTakenTurn) {
 
     // "hit" a particular player.
     blackJackGames[gameNum].players[playerInd].hit(blackJackGames[gameNum]);
-    console.log(blackJackGames[gameNum].players[playerInd]);
+    // console.log(blackJackGames[gameNum].players[playerInd]);
+    // console.log(blackJackGames[0].players.length, blackJackGames[0].currentTurn + 1);
+    console.log("What do we do...?");
+    console.log(blackJackGames[0].players.length, blackJackGames[0].currentTurn);
+    if(blackJackGames[0].players.length === blackJackGames[0].currentTurn + 1) {
+      stay(event);
+    } else if(blackJackGames[gameNum].players[blackJackGames[gameNum].currentTurn].score === "bust"){
+      blackJackGames[gameNum].currentTurn++;
+      blackJackGames[gameNum].enablePlayer();
+      console.log("That player bust! Moving on to the next one!");
+    }
   } else {
     console.log("Player has already finished their turn!");
-    // stay(event);
+      stay(event);
   }
 }
 
@@ -331,6 +359,7 @@ const stay = (event) => {
   // blackJackGames[gameNum].disablePlayer();
   // blackJackGames[gameNum].currentTurn++;
   // blackJackGames[gameNum].enablePlayer();
+  console.log("running checkGame!!!");
   blackJackGames[gameNum].checkGame();
 }
 
