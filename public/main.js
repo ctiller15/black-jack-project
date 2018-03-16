@@ -89,7 +89,11 @@ class Game {
         this.dealCards(i, 0, 2);
       }
       this.currentTurn++;
-      console.log(this.players[this.currentTurn]);
+      // console.log(this.players[this.currentTurn].playerElement.childNodes[1][0]);
+      // console.log(this.players[this.currentTurn]);
+      this.players[this.currentTurn].playerElement.childNodes[1][0].removeAttribute("disabled");
+      this.players[this.currentTurn].playerElement.childNodes[1][1].removeAttribute("disabled");
+      // this.players[this.currentTurn]
     }
 
     this.calculateWinner = () => {
@@ -199,6 +203,12 @@ class Player {
 
     this.hasTakenTurn = false;
 
+    this.isCurrentlyTurn = false;
+
+    // this.takeTurn = () => {
+
+    // }
+
     this.hit = (gameObj) => {
       if(this.hand.length < 6 && this.score !== "bust") {
         gameObj.dealCards(this.index, 0, 1);
@@ -231,12 +241,6 @@ class Player {
                   </section>`;
       return tile;
     }
-
-    // this.getDOMelement = () => {
-    //   // Grab the players' dom element, and then output on screen.
-    //   let playerElement = document.querySelector(`[data-playerId='${this.index}']`);
-    //   console.log(playerElement);
-    // }
   }
 }
 
