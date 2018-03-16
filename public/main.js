@@ -178,6 +178,8 @@ class Player {
 
     this.score = 0;
 
+    this.hasTakenTurn = false;
+
     this.hit = (gameObj) => {
       if(this.hand.length < 6 && this.score !== "bust") {
         gameObj.dealCards(this.index, 0, 1);
@@ -194,6 +196,8 @@ class Player {
       });
       if(this.score > 21) {
         this.score = "bust";
+        this.hasTakenTurn = true;
+        console.log(this.hasTakenTurn);
       }
       console.log(this.score, this.hand);
     }
@@ -223,10 +227,25 @@ const beginGame = () => {
 }
 
 const hit = (event) => {
+  if(!blackJackGames[gameNum].players[playerInd].hasTakenTurn) {
+    playerInd = event.target.getAttribute('data-playerId');
+    console.log(playerInd);
+  
+    // "hit" a particular player.
+    blackJackGames[gameNum].players[playerInd].hit(blackJackGames[gameNum]);
+    console.log(blackJackGames[gameNum].players[playerInd]);
+  } else {
+    console.log("Player has already finished their turn!");
+  }
+
+}
+
+const stay = (event) => {
   playerInd = event.target.getAttribute('data-playerId');
   console.log(playerInd);
+
+  blackJackGames[gameNum].players[playerInd].hasTakenTurn = true;
   console.log(blackJackGames[gameNum].players[playerInd]);
-  blackJackGames[gameNum].players[playerInd].hit(blackJackGames[gameNum]);
 }
 
 const main = () => {
