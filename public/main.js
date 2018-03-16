@@ -107,37 +107,53 @@ class Game {
       // this.checkGame();
     }
 
+    this.checkScore = () => {
+      let scoreArray = this.players.map( (player) => {
+        player.calculateScore();
+        console.log(player.score);
+        return player.score;
+      });
+      return scoreArray;    
+    }
+
     this.checkGame = () => {
       // console.log(this.players.length);
       // console.log(this.currentTurn + 1);
       this.disablePlayer();
       if(this.players.length === this.currentTurn + 1) {
         console.log("Game ending! It's the house's turn!");
+        this.calculateWinners();
       } else {
         this.currentTurn++;
         this.enablePlayer();
       }
     }
 
-    this.calculateWinner = () => {
-      let scoreArray = this.players.map( (player) => {
-        player.calculateScore();
-        console.log(player.score);
-        return player.score;
-      });
+    this.calculateWinners = () => {
+      // let scoreArray = this.players.map( (player) => {
+      //   player.calculateScore();
+      //   console.log(player.score);
+      //   return player.score;
+      // });
+      let scoreArray = this.checkScore();
 
-      let winner = "";
-      let max = 0;
+      // let winner = "";
+      let winners = [];
+      let dealer = this.players[0].score;
       for(let i = 0; i < scoreArray.length; i++) {
         if(scoreArray[i] !== "bust") {
-          if(scoreArray[i] > max) {
-            winner = `${i}`;
-            max = scoreArray[i];
+          if(scoreArray[i] > dealer) {
+            winners.push(i);
           }
+          // if(scoreArray[i] > max) {
+          //   winner = `${i}`;
+          //   max = scoreArray[i];
+          // }
         }
       }
 
-      let winString = `${winner === '0' ? 'The house' : `player ${winner}`} wins!!!`;
+      let winString = `${winners.length === 0 ? 'The house' : `player(s) ${winners} win!!!`}`;
+      // let winString = `${winner === '0' ? 'The house' : `player ${winner}`} wins!!!`;
 
       console.log(winString);
 
