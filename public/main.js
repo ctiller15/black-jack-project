@@ -34,6 +34,9 @@ class Game {
     // The current list of decks
     this.decks = [];
 
+    // Recording the players' turns.
+    this.currentTurn = 0;
+
     // This function creates a bunch of new decks.
     this.createDecks = (count) => {
       for(var i = 0; i < count; i++) {
@@ -48,6 +51,17 @@ class Game {
         this.players.push(newPlayer);
         
         gameScreen.innerHTML += newPlayer.createTile();
+      }
+      // Grab all DOM elements.
+      // Place them into their respective player objects.
+      this.createDOMElements();
+    }
+
+    // Creates individual DOM elements, and places them in the individual player class.
+    this.createDOMElements = () => {
+      let domElements = document.querySelectorAll('.player-board');
+      for(let i = 1; i <= domElements.length; i++) {
+        this.players[i].playerElement = domElements[i - 1];
       }
     }
 
@@ -74,6 +88,8 @@ class Game {
       for(let i = 0; i < playerCount + 1; i++) {
         this.dealCards(i, 0, 2);
       }
+      this.currentTurn++;
+      console.log(this.players[this.currentTurn]);
     }
 
     this.calculateWinner = () => {
@@ -209,12 +225,18 @@ class Player {
       // create a tile for a player with their id, and then return it.
       let tile = `<section class="player-board" data-playerId='${this.index}'>
                       <form>
-                      <button type="button" onclick="hit(event)" data-playerId="${this.index}">Hit</button>
-                      <button type="button" onclick="stay(event)" data-playerId="${this.index}">Stay</button>
+                      <button type="button" onclick="hit(event)" data-playerId="${this.index}" disabled >Hit</button>
+                      <button type="button" onclick="stay(event)" data-playerId="${this.index}" disabled >Stay</button>
                     </form>
                   </section>`;
       return tile;
     }
+
+    // this.getDOMelement = () => {
+    //   // Grab the players' dom element, and then output on screen.
+    //   let playerElement = document.querySelector(`[data-playerId='${this.index}']`);
+    //   console.log(playerElement);
+    // }
   }
 }
 
