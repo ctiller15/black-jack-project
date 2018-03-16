@@ -250,6 +250,8 @@ class Player {
         this.score = "bust";
         this.hasTakenTurn = true;
         console.log(this.hasTakenTurn);
+        // If they bust, immediately check and end their turn.
+        blackJackGames[gameNum].checkGame();
       }
       console.log(this.score, this.hand);
     }
@@ -275,6 +277,7 @@ class Player {
 
 // The game logic starts here:
 const beginGame = () => {
+  resetGame();
   let players = Number(playerCountInput.value);
   let decks = Number(deckCountInput.value);
   console.log(`${players} player(s) and ${decks} deck(s)! Let's go!`);
@@ -299,6 +302,7 @@ const hit = (event) => {
     console.log(blackJackGames[gameNum].players[playerInd]);
   } else {
     console.log("Player has already finished their turn!");
+    // stay(event);
   }
 }
 
@@ -312,6 +316,11 @@ const stay = (event) => {
   // blackJackGames[gameNum].currentTurn++;
   // blackJackGames[gameNum].enablePlayer();
   blackJackGames[gameNum].checkGame();
+}
+
+// A function that resets the game
+const resetGame = () => {
+  gameScreen.innerHTML = "";
 }
 
 const main = () => {
