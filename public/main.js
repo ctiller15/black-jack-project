@@ -91,9 +91,32 @@ class Game {
       this.currentTurn++;
       // console.log(this.players[this.currentTurn].playerElement.childNodes[1][0]);
       // console.log(this.players[this.currentTurn]);
+      // this.players[this.currentTurn].playerElement.childNodes[1][0].removeAttribute("disabled");
+      // this.players[this.currentTurn].playerElement.childNodes[1][1].removeAttribute("disabled");
+      // this.players[this.currentTurn]
+      this.enablePlayer();
+    }
+    this.enablePlayer = () => {
       this.players[this.currentTurn].playerElement.childNodes[1][0].removeAttribute("disabled");
       this.players[this.currentTurn].playerElement.childNodes[1][1].removeAttribute("disabled");
-      // this.players[this.currentTurn]
+    }
+
+    this.disablePlayer = () => {
+      this.players[this.currentTurn].playerElement.childNodes[1][0].setAttribute("disabled", "disabled");
+      this.players[this.currentTurn].playerElement.childNodes[1][1].setAttribute("disabled", "disabled");  
+      // this.checkGame();
+    }
+
+    this.checkGame = () => {
+      // console.log(this.players.length);
+      // console.log(this.currentTurn + 1);
+      this.disablePlayer();
+      if(this.players.length === this.currentTurn + 1) {
+        console.log("Game ending! It's the house's turn!");
+      } else {
+        this.currentTurn++;
+        this.enablePlayer();
+      }
     }
 
     this.calculateWinner = () => {
@@ -285,6 +308,10 @@ const stay = (event) => {
 
   blackJackGames[gameNum].players[playerInd].hasTakenTurn = true;
   console.log(blackJackGames[gameNum].players[playerInd]);
+  // blackJackGames[gameNum].disablePlayer();
+  // blackJackGames[gameNum].currentTurn++;
+  // blackJackGames[gameNum].enablePlayer();
+  blackJackGames[gameNum].checkGame();
 }
 
 const main = () => {
