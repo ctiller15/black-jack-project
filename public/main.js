@@ -1,3 +1,10 @@
+// The name of the game!
+let blackJackGames = [];
+
+let gameNum = 0;
+
+// Values used for calculations.
+
 const suiteCards = [2,3,4,5,6,7,8,9,10,'J','Q','K','A'];
 
 const valueMap = {
@@ -7,12 +14,12 @@ const valueMap = {
   'A': 11
 };
 
-// // Calculates the maximum value of an array.
-// const max = (...arr) => {
-//   return arr.reduce( (a, b) => {
-//     return a >= b ? a : b;
-//   });
-// }
+// Elements used for DOM manipulation.
+
+// For the home menu:
+const introScreen = document.querySelector(".introduction-screen");
+const playerCountInput = document.querySelector(".players-count");
+const deckCountInput = document.querySelector(".decks-count");
 
 // The game class. Represents game meta-data such as the amount of players, the amount decks in play, and
 // has methods to create those objects.
@@ -172,7 +179,9 @@ class Player {
     this.score = 0;
 
     this.hit = (gameObj) => {
-      gameObj.dealCards(this.index, 0, 1);
+      if(this.hand.length < 6 && this.score !== "bust") {
+        gameObj.dealCards(this.index, 0, 1);
+      }
       this.calculateScore();
     }
 
@@ -186,6 +195,7 @@ class Player {
       if(this.score > 21) {
         this.score = "bust";
       }
+      console.log(this.score, this.hand);
     }
   }
 }
@@ -193,11 +203,35 @@ class Player {
 // The house is always going to exist.
 // const house = new Player();
 
-let blackJack = new Game();
-blackJack.startGame(2,1);
+// let blackJack = new Game();
+// blackJack.startGame(2,1);
+
+// The game logic starts here:
+const beginGame = () => {
+  let players = Number(playerCountInput.value);
+  let decks = Number(deckCountInput.value);
+  console.log(`${players} player(s) and ${decks} deck(s)! Let's go!`);
+  // create game
+  let blackJack = new Game();
+  blackJackGames.push(blackJack);
+  gameNum = blackJackGames.length - 1;
+  // start game
+  blackJackGames[gameNum].startGame(players, decks);
+  console.log(blackJackGames[gameNum]);
+  //TODO: move form out of the way
+
+}
+
+const hit = (event) => {
+  playerInd = event.target.getAttribute('data-playerId');
+  console.log(playerInd);
+  console.log(blackJackGames[gameNum].players[playerInd]);
+  blackJackGames[gameNum].players[playerInd].hit(blackJackGames[gameNum]);
+}
 
 const main = () => {
-  document.querySelector('h1').textContent += '?';
+  // document.querySelector('h1').textContent += '?';
+
 }
 
 document.addEventListener('DOMContentLoaded', main);

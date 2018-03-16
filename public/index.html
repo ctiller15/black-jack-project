@@ -7,7 +7,27 @@
     <link rel="stylesheet" href="./screen.css">
   </head>
   <body>
-    <h1>Welcome to blackjack!</h1>
+    <section class="introduction-screen">
+      <h1>Welcome to blackjack!</h1>
+      <p>How many players and decks do you want?</p>
+
+      <form class="start-form">
+        <input class="players-count" type="number" min=1 value=1>
+        <input class="decks-count" type="number" min=1 value=1>
+        <button type="button" onClick="beginGame()">Start game!</button>
+      </form>
+
+    </section>
+
+    <section class="game-screen">
+      <section class="player-board" data-playerId="1">
+        <form>
+          <button type="button" onclick="hit(event)" data-playerId="1">Hit</button>
+          <button type="button" onclick="stay(event)" data-playerId="1">Stay</button>
+        </form>
+      </section>
+    </section>
+
     <script src="./main.js" charset="utf-8"></script>
   </body>
 </html>
