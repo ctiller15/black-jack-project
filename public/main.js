@@ -98,14 +98,14 @@ class Game {
     this.disablePlayer = () => {
       this.players[this.currentTurn].playerElement.childNodes[1][0].setAttribute("disabled", "disabled");
       this.players[this.currentTurn].playerElement.childNodes[1][1].setAttribute("disabled", "disabled");
-      console.log("disabling: " + this.currentTurn);
+      // console.log("disabling: " + this.currentTurn);
       // this.checkGame();
     }
 
     this.checkScore = () => {
       let scoreArray = this.players.map( (player) => {
         player.calculateScore();
-        console.log(player.score);
+        // console.log(player.score);
         return player.score;
       });
       return scoreArray;    
@@ -128,7 +128,7 @@ class Game {
       // let winner = "";
       let winners = [];
       let dealer = this.players[0].score;
-      console.log(dealer);
+      // console.log(dealer);
       for(let i = 0; i < scoreArray.length; i++) {
         if(scoreArray[i] !== "bust") {
           if(scoreArray[i] > dealer) {
@@ -238,19 +238,64 @@ class Player {
 
     this.calculateScore = () => {
       // Reset the score to 0...
-      this.score = 0;
+      console.log(`hand: ${this.hand.forEach((item) => {console.log(item)})}`);
+      let allScores = [0,];
+      let updatedScores;
+      let scoreArray;
+      let filteredArray;
+      // this.score = 0;
       this.hand.forEach((card) => {
-        this.score += valueMap[card.value] || card.value;
+        let temp = [];
+        // purely to account for aces.
+          if(card.value === "A") {
+            console.log("found an ace!");
+
+            temp = allScores.map((val) => {
+              return [val + 1, val + 11];
+            })
+            .reduce((a,b) => {
+              a.concat(b);
+            });
+
+            // console.log(updatedScores);
+            // temp = updatedScores.reduce((a,b) => {
+            //   a.concat(b);
+            // });
+            // console.log(temp);
+          } else {
+            temp = allScores.map((val) => {
+              return val += valueMap[card.value] || card.value;
+            });
+            // console.log(temp);
+          }
+
+          allScores = temp;
+
+          scoreArray = allScores.filter((value) => {
+            return value <= 21;
+          })
+          .sort((a,b) => {
+            return b - a;
+          });
+
+          // scoreArray = filteredArray.sort((a,b) => {
+          //   return b - a;
+          // });
+
+
       });
-      console.log(this.score);
-      if(this.score > 21) {
+      console.log(`scoreArray: ${scoreArray}`);
+      this.score = scoreArray[0] || "bust";
+      console.log(`player ${this.index ? this.index : "house"}: ${this.score}`);
+
+      if(this.score > 21 || this.score === "bust") {
         // If they bust, immediately check and end their turn.
         this.score = "bust";
         this.hasTakenTurn = true;
         blackJackGames[gameNum].disablePlayer();
-        console.log(`on turn: ${blackJackGames[gameNum].currentTurn}`);
+        // console.log(`on turn: ${blackJackGames[gameNum].currentTurn}`);
       }
-      console.log("Ends here!");
+      // console.log("Ends here!");
     }
 
     this.createTile = () => {
@@ -271,14 +316,14 @@ const beginGame = () => {
   resetGame();
   let players = Number(playerCountInput.value);
   let decks = Number(deckCountInput.value);
-  console.log(`${players} player(s) and ${decks} deck(s)! Let's go!`);
+  // console.log(`${players} player(s) and ${decks} deck(s)! Let's go!`);
   // create game
   let blackJack = new Game();
   blackJackGames.push(blackJack);
   gameNum = blackJackGames.length - 1;
   // start game
   blackJackGames[gameNum].startGame(players, decks);
-  console.log(blackJackGames[gameNum]);
+  // console.log(blackJackGames[gameNum]);
   //TODO: move form out of the way
 
 }
