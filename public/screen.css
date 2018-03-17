@@ -7,3 +7,16 @@ body {
   min-height: 100%;
   font: 16px / 1 sans-serif;
 }
+
+.game-screen {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.player-board {
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
+}

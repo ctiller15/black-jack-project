@@ -87,17 +87,26 @@ class Game {
       for(let i = 0; i < playerCount + 1; i++) {
         this.dealCards(i, 0, 2);
       }
+      this.players.forEach((player) => {
+        player.calculateScore();
+      });
       this.currentTurn++;
       this.enablePlayer();
     }
+
+    // Should be faster to explicitly choose the node instead of relying on querySelector.
+    // 1 : player card
+    // 3,0: 'Hit' button.
+    // 3,1: 'Stay' button.
     this.enablePlayer = () => {
-      this.players[this.currentTurn].playerElement.childNodes[1][0].removeAttribute("disabled");
-      this.players[this.currentTurn].playerElement.childNodes[1][1].removeAttribute("disabled");
+      console.log(this.players[this.currentTurn]);
+      this.players[this.currentTurn].playerElement.childNodes[3][0].removeAttribute("disabled");
+      this.players[this.currentTurn].playerElement.childNodes[3][1].removeAttribute("disabled");
     }
 
     this.disablePlayer = () => {
-      this.players[this.currentTurn].playerElement.childNodes[1][0].setAttribute("disabled", "disabled");
-      this.players[this.currentTurn].playerElement.childNodes[1][1].setAttribute("disabled", "disabled");
+      this.players[this.currentTurn].playerElement.childNodes[3][0].setAttribute("disabled", "disabled");
+      this.players[this.currentTurn].playerElement.childNodes[3][1].setAttribute("disabled", "disabled");
       // console.log("disabling: " + this.currentTurn);
       // this.checkGame();
     }
@@ -237,6 +246,7 @@ class Player {
     }
 
     this.calculateScore = () => {
+
       // Reset the score to 0...
       console.log(`hand: ${this.hand.forEach((item) => {console.log(item)})}`);
       let allScores = [0,];
@@ -299,17 +309,33 @@ class Player {
         // console.log(`on turn: ${blackJackGames[gameNum].currentTurn}`);
       }
       // console.log("Ends here!");
+      this.updateDOMScore();
     }
 
     this.createTile = () => {
       // create a tile for a player with their id, and then return it.
       let tile = `<section class="player-board" data-playerId='${this.index}'>
+                      <section class="player-info" data-playerId='${this.index}'>
+                        <section class="player-cards">
+                        </section>
+                        <section class="player-score">
+                        </section>
+                      </section>
                       <form>
                       <button type="button" onclick="hit(event)" data-playerId="${this.index}" disabled >Hit</button>
                       <button type="button" onclick="stay(event)" data-playerId="${this.index}" disabled >Stay</button>
                     </form>
                   </section>`;
       return tile;
+    }
+
+    this.updateDOMScore = () => {
+      // Grab the appropriate DOM element, and then update it with the current score.
+      if(this.index > 0) {
+        this.playerElement.children[0].children[0].textContent = JSON.stringify(this.hand);
+        this.playerElement.children[0].children[1].textContent = this.score;
+      }
+
     }
   }
 }
