@@ -240,10 +240,7 @@ class Player {
       // Reset the score to 0...
       console.log(`hand: ${this.hand.forEach((item) => {console.log(item)})}`);
       let allScores = [0,];
-      let updatedScores;
       let scoreArray;
-      let filteredArray;
-      // this.score = 0;
       this.hand.forEach((card) => {
         let temp = [];
         // purely to account for aces.
@@ -257,16 +254,10 @@ class Player {
               a.concat(b);
             });
 
-            // console.log(updatedScores);
-            // temp = updatedScores.reduce((a,b) => {
-            //   a.concat(b);
-            // });
-            // console.log(temp);
           } else {
             temp = allScores.map((val) => {
               return val += valueMap[card.value] || card.value;
             });
-            // console.log(temp);
           }
 
           allScores = temp;
@@ -277,11 +268,6 @@ class Player {
           .sort((a,b) => {
             return b - a;
           });
-
-          // scoreArray = filteredArray.sort((a,b) => {
-          //   return b - a;
-          // });
-
 
       });
       console.log(`scoreArray: ${scoreArray}`);
