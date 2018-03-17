@@ -244,6 +244,7 @@ class Player {
       this.hand.forEach((card) => {
         let temp = [];
         // purely to account for aces.
+        console.log(allScores);
           if(card.value === "A") {
             console.log("found an ace!");
 
@@ -253,6 +254,7 @@ class Player {
             .reduce((a,b) => {
               a.concat(b);
             });
+            console.log(temp);
 
           } else {
             temp = allScores.map((val) => {
@@ -261,6 +263,7 @@ class Player {
           }
 
           allScores = temp;
+          console.log(allScores);
 
           scoreArray = allScores.filter((value) => {
             return value <= 21;
@@ -316,11 +319,13 @@ const beginGame = () => {
 
 const hit = (event) => {
   playerInd = event.target.getAttribute('data-playerId');
+  console.log(blackJackGames[gameNum].currentTurn);
   if(!blackJackGames[gameNum].players[playerInd].hasTakenTurn) {
 
     // "hit" a particular player.
     blackJackGames[gameNum].players[playerInd].hit(blackJackGames[gameNum]);
-    if(blackJackGames[0].players.length === blackJackGames[0].currentTurn + 1) {
+    // If we are on the last player, AND that player has gone bust, run the stay function.
+    if(blackJackGames[0].players.length === blackJackGames[0].currentTurn + 1 && blackJackGames[0].players[blackJackGames[0].currentTurn].score === "bust") {
       stay(event);
     } else if(blackJackGames[gameNum].players[blackJackGames[gameNum].currentTurn].score === "bust"){
       blackJackGames[gameNum].currentTurn++;
