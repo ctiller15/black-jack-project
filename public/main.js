@@ -240,21 +240,35 @@ class Player {
       // Reset the score to 0...
       console.log(`hand: ${this.hand.forEach((item) => {console.log(item)})}`);
       let allScores = [0,];
+      let updatedScores;
+      let concatScores;
       let scoreArray;
       this.hand.forEach((card) => {
         let temp = [];
         // purely to account for aces.
         console.log(allScores);
+        // ***
+        // There appears to be a bug here that I cannot reliably recreate.
+        // It seems to have disappeared after I separated the map and reduce into separate calls,
+        // But I have little idea as to why.
+        // Be wary of this section and keep an eye on it. 
+        // ***
           if(card.value === "A") {
             console.log("found an ace!");
 
-            temp = allScores.map((val) => {
+            updatedScores = allScores.map((val) => {
               return [val + 1, val + 11];
-            })
-            .reduce((a,b) => {
-              a.concat(b);
             });
-            console.log(temp);
+
+            console.log(updatedScores);
+
+
+            concatScores = updatedScores.reduce((a,b) => {
+              return a.concat(b);
+            });
+            console.log(concatScores);
+
+            temp = concatScores;
 
           } else {
             temp = allScores.map((val) => {
@@ -325,7 +339,7 @@ const hit = (event) => {
     // "hit" a particular player.
     blackJackGames[gameNum].players[playerInd].hit(blackJackGames[gameNum]);
     // If we are on the last player, AND that player has gone bust, run the stay function.
-    if(blackJackGames[0].players.length === blackJackGames[0].currentTurn + 1 && blackJackGames[0].players[blackJackGames[0].currentTurn].score === "bust") {
+    if(blackJackGames[gameNum].players.length === blackJackGames[gameNum].currentTurn + 1 && blackJackGames[gameNum].players[blackJackGames[gameNum].currentTurn].score === "bust") {
       stay(event);
     } else if(blackJackGames[gameNum].players[blackJackGames[gameNum].currentTurn].score === "bust"){
       blackJackGames[gameNum].currentTurn++;
