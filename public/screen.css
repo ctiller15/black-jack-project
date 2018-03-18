@@ -12,6 +12,13 @@ body {
   align-items: center;
 }
 
+.house-display {
+  display: none;
+  border: 1px solid green;
+  width: 150px;
+  height: 200px;
+}
+
 .game-screen {
   display: flex;
   flex-direction: row;

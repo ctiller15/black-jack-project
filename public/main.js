@@ -28,6 +28,9 @@ const gameScreen = document.querySelector(".game-screen");
 // For the display of all winners:
 const winDisplay = document.querySelector(".winners");
 
+// The display for the house:
+const houseDisplay = document.querySelector(".house-display");
+
 // The game class. Represents game meta-data such as the amount of players, the amount decks in play, and
 // has methods to create those objects.
 class Game {
@@ -39,6 +42,9 @@ class Game {
 
     // The current list of decks
     this.decks = [];
+
+    // An array of all player bets.
+    this.bets = [];
 
     // Recording the players' turns.
     this.currentTurn = 0;
@@ -58,6 +64,9 @@ class Game {
         
         gameScreen.innerHTML += newPlayer.createTile();
       }
+      // setting the index for the dealer.
+      this.players[0].index = 0;
+      houseDisplay.innerHTML += this.players[0].createTile();
       // Grab all DOM elements.
       // Place them into their respective player objects.
       this.createDOMElements();
@@ -69,6 +78,7 @@ class Game {
       for(let i = 1; i <= domElements.length; i++) {
         this.players[i].playerElement = domElements[i - 1];
       }
+      this.players[0].playerElement = houseDisplay;
     }
 
     // Shuffles every single deck.
@@ -94,6 +104,8 @@ class Game {
       this.players.forEach((player) => {
         player.calculateScore();
       });
+      houseDisplay.style.display = "block";
+      // houseDisplay.innerHTML = this.players[0].createTile();
       this.currentTurn++;
       this.enablePlayer();
     }
@@ -103,7 +115,7 @@ class Game {
     // 3,0: 'Hit' button.
     // 3,1: 'Stay' button.
     this.enablePlayer = () => {
-      console.log(this.players[this.currentTurn]);
+      // console.log(this.players[this.currentTurn]);
       this.players[this.currentTurn].playerElement.childNodes[3][0].removeAttribute("disabled");
       this.players[this.currentTurn].playerElement.childNodes[3][1].removeAttribute("disabled");
     }
@@ -167,7 +179,7 @@ class Game {
 
       let winString = `${winners.length === 0 ? 'The house wins!' : `player(s) ${winners} win!!!`}`;
 
-      console.log(winString);
+      // console.log(winString);
       winDisplay.textContent = winString;
 
 
@@ -267,7 +279,7 @@ class Player {
     this.calculateScore = () => {
 
       // Reset the score to 0...
-      console.log(`hand: ${this.hand.forEach((item) => {console.log(item)})}`);
+      // console.log(`hand: ${this.hand.forEach((item) => {console.log(item)})}`);
       let allScores = [0,];
       let updatedScores;
       let concatScores;
@@ -275,7 +287,7 @@ class Player {
       this.hand.forEach((card) => {
         let temp = [];
         // purely to account for aces.
-        console.log(allScores);
+        // console.log(allScores);
         // ***
         // There appears to be a bug here that I cannot reliably recreate.
         // It seems to have disappeared after I separated the map and reduce into separate calls,
@@ -283,19 +295,19 @@ class Player {
         // Be wary of this section and keep an eye on it. 
         // ***
           if(card.value === "A") {
-            console.log("found an ace!");
+            // console.log("found an ace!");
 
             updatedScores = allScores.map((val) => {
               return [val + 1, val + 11];
             });
 
-            console.log(updatedScores);
+            // console.log(updatedScores);
 
 
             concatScores = updatedScores.reduce((a,b) => {
               return a.concat(b);
             });
-            console.log(concatScores);
+            // console.log(concatScores);
 
             temp = concatScores;
 
@@ -306,7 +318,7 @@ class Player {
           }
 
           allScores = temp;
-          console.log(allScores);
+          // console.log(allScores);
 
           scoreArray = allScores.filter((value) => {
             return value <= 21;
@@ -316,9 +328,9 @@ class Player {
           });
 
       });
-      console.log(`scoreArray: ${scoreArray}`);
+      // console.log(`scoreArray: ${scoreArray}`);
       this.score = scoreArray[0] || "bust";
-      console.log(`player ${this.index ? this.index : "house"}: ${this.score}`);
+      // console.log(`player ${this.index ? this.index : "house"}: ${this.score}`);
 
       if(this.score > 21 || this.score === "bust") {
         // If they bust, immediately check and end their turn.
@@ -333,17 +345,17 @@ class Player {
 
     this.createTile = () => {
       // create a tile for a player with their id, and then return it.
-      let tile = `<section class="player-board" data-playerId='${this.index}'>
+      let tile = `<section class="${this.index !== 0 ? 'player-board' : 'house-board'}" data-playerId='${this.index}'>
                       <section class="player-info" data-playerId='${this.index}'>
                         <section class="player-cards">
                         </section>
                         <section class="player-score">
                         </section>
                       </section>
-                      <form>
+                      ${this.index !== 0 ? `<form>
                       <button type="button" onclick="hit(event)" data-playerId="${this.index}" disabled >Hit</button>
                       <button type="button" onclick="stay(event)" data-playerId="${this.index}" disabled >Stay</button>
-                    </form>
+                    </form>` : ``}
                   </section>`;
       return tile;
     }
@@ -361,9 +373,31 @@ class Player {
                       </section>`;
         });
         tempHTML += `</section>`;
-        console.log(tempHTML);
+        // console.log(tempHTML);
         this.playerElement.children[0].children[0].innerHTML = tempHTML;
         this.playerElement.children[0].children[1].textContent = `Score: ${this.score}`;
+      } else if(this.index === 0) {
+          let cardDisplay = this.hand.map((card) => {
+            return([card.suite, card.value]);
+          });
+          let tempHTML = "<section class='playerCards'>";
+          cardDisplay.forEach((card, index) => {
+            console.log(card);
+            console.log("Updating DOM");
+            // console.log(blackJackGames[gameNum].players.length, blackJackGames[gameNum].currentTurn);
+            if(index === 0 && (blackJackGames[gameNum].players.length !== blackJackGames[gameNum].currentTurn + 1)) {
+              tempHTML += `<section class="cardImage hidden">
+              hidden
+              </section>`
+            } else {
+              tempHTML += `<section class="cardImage">
+              ${card[1]} of ${card[0] === "D" ? 'Diamonds' : card[0] === "C" ? 'Clubs' : card[0] === "S" ? 'Spades' : "Hearts"}
+            </section>`;
+            }
+          });
+          tempHTML += `</section>`;
+          console.log(tempHTML);
+          this.playerElement.children[0].children[0].innerHTML = tempHTML;
       }
 
     }
@@ -391,7 +425,7 @@ const beginGame = () => {
 
 const hit = (event) => {
   playerInd = event.target.getAttribute('data-playerId');
-  console.log(blackJackGames[gameNum].currentTurn);
+  // console.log(blackJackGames[gameNum].currentTurn);
   if(!blackJackGames[gameNum].players[playerInd].hasTakenTurn) {
 
     // "hit" a particular player.
