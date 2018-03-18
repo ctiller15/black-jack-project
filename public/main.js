@@ -3,6 +3,8 @@ let blackJackGames = [];
 
 let gameNum = 0;
 
+let currentGame;
+
 // Values used for calculations.
 
 const suiteCards = [2,3,4,5,6,7,8,9,10,'J','Q','K','A'];
@@ -136,7 +138,7 @@ class Game {
       this.disablePlayer();
       if(this.players.length === this.currentTurn + 1) {
         console.log("Game ending! It's the house's turn!");
-        blackJackGames[gameNum].houseTurn();
+        currentGame.houseTurn();
         this.calculateWinners();
       } else {
         this.currentTurn++;
@@ -148,9 +150,9 @@ class Game {
     // The house is always player[0].
     // The house will continually draw cards until it has more than 18 or busts.
     this.houseTurn = () => {
-      while(blackJackGames[gameNum].players[0].score < 18 && blackJackGames[gameNum].players[0].score !== "bust") {
-        blackJackGames[gameNum].dealCards(0,0,1);
-        blackJackGames[gameNum].players[0].calculateScore();
+      while(currentGame.players[0].score < 18 && currentGame.players[0].score !== "bust") {
+        currentGame.dealCards(0,0,1);
+        currentGame.players[0].calculateScore();
       }
     }
 
@@ -234,7 +236,6 @@ class Deck {
 
     // the current deck.
     this.deck = this.createDeck();
-
   }
 }
 
@@ -263,35 +264,32 @@ class Player {
       this.calculateScore();
     }
 
+    this.sumScoreArray = (playingCard, arr) => {
+      let temp;
+      if(playingCard.value === "A") {
+
+        temp = arr.map((val) => {
+          return [val + 1, val + 11];
+        })
+        .reduce((a,b) => {
+          return a.concat(b);
+        });
+
+      } else {
+        temp = arr.map((val) => {
+          return val += valueMap[playingCard.value] || playingCard.value;
+        });
+      }
+      return temp;      
+    }
+
     this.calculateScore = () => {
 
       // Reset the score to 0...
       let allScores = [0,];
-      let updatedScores;
-      let concatScores;
       let scoreArray;
       this.hand.forEach((card) => {
-        let temp = [];
-        // purely to account for aces.
-          if(card.value === "A") {
-
-            updatedScores = allScores.map((val) => {
-              return [val + 1, val + 11];
-            });
-
-            concatScores = updatedScores.reduce((a,b) => {
-              return a.concat(b);
-            });
-
-            temp = concatScores;
-
-          } else {
-            temp = allScores.map((val) => {
-              return val += valueMap[card.value] || card.value;
-            });
-          }
-
-          allScores = temp;
+          allScores = this.sumScoreArray(card, allScores);
 
           scoreArray = allScores.filter((value) => {
             return value <= 21;
@@ -301,13 +299,14 @@ class Player {
           });
 
       });
+
       this.score = scoreArray[0] || "bust";
 
       if(this.score > 21 || this.score === "bust") {
         // If they bust, immediately check and end their turn.
         this.score = "bust";
         this.hasTakenTurn = true;
-        blackJackGames[gameNum].disablePlayer();
+        currentGame.disablePlayer();
       }
       this.updateDOMScore();
     }
@@ -329,6 +328,8 @@ class Player {
       return tile;
     }
 
+
+    // Desperately needs a refactor.
     this.updateDOMScore = () => {
       // Grab the appropriate DOM element, and then update it with the current score.
       if(this.index > 0) {
@@ -350,7 +351,7 @@ class Player {
           });
           let tempHTML = "<section class='playerCards'>";
           cardDisplay.forEach((card, index) => {
-            if(index === 0 && (blackJackGames[gameNum].players.length !== blackJackGames[gameNum].currentTurn + 1)) {
+            if(index === 0 && (currentGame.players.length !== currentGame.currentTurn + 1)) {
               tempHTML += `<section class="cardImage hidden">
               hidden
               </section>`
@@ -380,23 +381,25 @@ const beginGame = () => {
   blackJackGames.push(blackJack);
   gameNum = blackJackGames.length - 1;
   // start game
-  blackJackGames[gameNum].startGame(players, decks);
+  currentGame = blackJackGames[gameNum];
+  // currentGame.startGame(players, decks);
+  currentGame.startGame(players, decks);
   //TODO: move form out of the way
 
 }
 
 const hit = (event) => {
   playerInd = event.target.getAttribute('data-playerId');
-  if(!blackJackGames[gameNum].players[playerInd].hasTakenTurn) {
+  if(!currentGame.players[playerInd].hasTakenTurn) {
 
     // "hit" a particular player.
-    blackJackGames[gameNum].players[playerInd].hit(blackJackGames[gameNum]);
+    currentGame.players[playerInd].hit(currentGame);
     // If we are on the last player, AND that player has gone bust, run the stay function.
-    if(blackJackGames[gameNum].players.length === blackJackGames[gameNum].currentTurn + 1 && blackJackGames[gameNum].players[blackJackGames[gameNum].currentTurn].score === "bust") {
+    if(currentGame.players.length === currentGame.currentTurn + 1 && currentGame.players[currentGame.currentTurn].score === "bust") {
       stay(event);
-    } else if(blackJackGames[gameNum].players[blackJackGames[gameNum].currentTurn].score === "bust"){
-      blackJackGames[gameNum].currentTurn++;
-      blackJackGames[gameNum].enablePlayer();
+    } else if(currentGame.players[currentGame.currentTurn].score === "bust"){
+      currentGame.currentTurn++;
+      currentGame.enablePlayer();
       console.log("That player bust! Moving on to the next one!");
     }
   } else {
@@ -407,12 +410,11 @@ const hit = (event) => {
 
 const stay = (event) => {
   playerInd = event.target.getAttribute('data-playerId');
-
-  blackJackGames[gameNum].players[playerInd].hasTakenTurn = true;
-  blackJackGames[gameNum].checkGame();
+  currentGame.players[playerInd].hasTakenTurn = true;
+  currentGame.checkGame();
 }
 
-// A function that resets the game
+// A function that resets the game screen
 const resetGame = () => {
   gameScreen.innerHTML = "";
   winDisplay.textContent = "";
