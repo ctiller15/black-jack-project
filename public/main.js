@@ -18,11 +18,15 @@ const valueMap = {
 
 // For the home menu:
 const introScreen = document.querySelector(".introduction-screen");
+const startButton = document.querySelector(".start-form button");
 
 // For the players and their sections:
 const playerCountInput = document.querySelector(".players-count");
 const deckCountInput = document.querySelector(".decks-count");
 const gameScreen = document.querySelector(".game-screen");
+
+// For the display of all winners:
+const winDisplay = document.querySelector(".winners");
 
 // The game class. Represents game meta-data such as the amount of players, the amount decks in play, and
 // has methods to create those objects.
@@ -161,9 +165,10 @@ class Game {
       }
       // console.log(winners);
 
-      let winString = `${winners.length === 0 ? 'The house' : `player(s) ${winners} win!!!`}`;
+      let winString = `${winners.length === 0 ? 'The house wins!' : `player(s) ${winners} win!!!`}`;
 
       console.log(winString);
+      winDisplay.textContent = winString;
 
 
     }
@@ -346,8 +351,19 @@ class Player {
     this.updateDOMScore = () => {
       // Grab the appropriate DOM element, and then update it with the current score.
       if(this.index > 0) {
-        this.playerElement.children[0].children[0].textContent = JSON.stringify(this.hand);
-        this.playerElement.children[0].children[1].textContent = this.score;
+        let cardDisplay = this.hand.map((card) => {
+          return([card.suite, card.value]);
+        });
+        let tempHTML = "<section class='playerCards'>";
+        cardDisplay.forEach((card) => {
+          tempHTML += `<section class="cardImage">
+                        ${card[1]} of ${card[0] === "D" ? 'Diamonds' : card[0] === "C" ? 'Clubs' : card[0] === "S" ? 'Spades' : "Hearts"}
+                      </section>`;
+        });
+        tempHTML += `</section>`;
+        console.log(tempHTML);
+        this.playerElement.children[0].children[0].innerHTML = tempHTML;
+        this.playerElement.children[0].children[1].textContent = `Score: ${this.score}`;
       }
 
     }
@@ -357,6 +373,8 @@ class Player {
 // The game logic starts here:
 const beginGame = () => {
   resetGame();
+  // Change button
+  startButton.textContent = "Play Again?";
   let players = Number(playerCountInput.value);
   let decks = Number(deckCountInput.value);
   // console.log(`${players} player(s) and ${decks} deck(s)! Let's go!`);
@@ -402,6 +420,7 @@ const stay = (event) => {
 // A function that resets the game
 const resetGame = () => {
   gameScreen.innerHTML = "";
+  winDisplay.textContent = "";
 }
 
 const main = () => {

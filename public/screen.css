@@ -6,6 +6,10 @@ body {
   margin: 0;
   min-height: 100%;
   font: 16px / 1 sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .game-screen {
@@ -16,7 +20,7 @@ body {
 }
 
 .player-board {
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 200px;
   border: 1px solid black;
 }
