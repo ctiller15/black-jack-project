@@ -106,7 +106,7 @@ class Game {
       this.players.forEach((player) => {
         player.calculateScore();
       });
-      houseDisplay.style.display = "block";
+      houseDisplay.style.display = "flex";
       // houseDisplay.innerHTML = this.players[0].createTile();
       this.currentTurn++;
       this.enablePlayer();

@@ -10,13 +10,36 @@ body {
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  background-color: rgb(21, 99, 21);
+}
+
+.introduction-screen {
+  color: white;
 }
 
 .house-display {
   display: none;
-  border: 1px solid green;
+  padding: 10px;
+  border: 1px solid rgb(33, 56, 15);
+  background: rgb(226, 224, 224);
   width: 150px;
   height: 200px;
+  border-radius: 5px;
+  /* display: flex; */
+  flex-direction: column;
+  align-items: center;
+}
+
+.start-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input {
+  padding: 10px;
+  border-radius: 5px;
+  border: 2px solid gray;
 }
 
 .game-screen {
@@ -27,7 +50,12 @@ body {
 }
 
 .player-board {
+  padding: 10px;
   width: 150px;
   height: 200px;
-  border: 1px solid black;
+  border: 1px solid rgb(48, 104, 126);
+  background: rgb(226, 224, 224);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
