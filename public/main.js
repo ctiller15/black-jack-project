@@ -124,10 +124,24 @@ class Game {
       this.disablePlayer();
       if(this.players.length === this.currentTurn + 1) {
         console.log("Game ending! It's the house's turn!");
+        blackJackGames[gameNum].houseTurn();
         this.calculateWinners();
       } else {
         this.currentTurn++;
         this.enablePlayer();
+      }
+    }
+
+    // A function to calculate the house's score.
+    // The house is always player[0].
+    // The house will continually draw cards until it has more than 18 or busts.
+    this.houseTurn = () => {
+      // console.log("Starts here!!!");
+      // console.log(blackJackGames[gameNum].players[0].score);
+      while(blackJackGames[gameNum].players[0].score < 18 && blackJackGames[gameNum].players[0].score !== "bust") {
+        blackJackGames[gameNum].dealCards(0,0,1);
+        blackJackGames[gameNum].players[0].calculateScore();
+        // console.log(blackJackGames[gameNum].players[0].score);
       }
     }
 
@@ -140,7 +154,7 @@ class Game {
       // console.log(dealer);
       for(let i = 0; i < scoreArray.length; i++) {
         if(scoreArray[i] !== "bust") {
-          if(scoreArray[i] > dealer) {
+          if(scoreArray[i] > dealer || dealer === "bust") {
             winners.push(i);
           }
         }
