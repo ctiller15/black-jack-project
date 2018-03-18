@@ -115,7 +115,6 @@ class Game {
     // 3,0: 'Hit' button.
     // 3,1: 'Stay' button.
     this.enablePlayer = () => {
-      // console.log(this.players[this.currentTurn]);
       this.players[this.currentTurn].playerElement.childNodes[3][0].removeAttribute("disabled");
       this.players[this.currentTurn].playerElement.childNodes[3][1].removeAttribute("disabled");
     }
@@ -123,14 +122,11 @@ class Game {
     this.disablePlayer = () => {
       this.players[this.currentTurn].playerElement.childNodes[3][0].setAttribute("disabled", "disabled");
       this.players[this.currentTurn].playerElement.childNodes[3][1].setAttribute("disabled", "disabled");
-      // console.log("disabling: " + this.currentTurn);
-      // this.checkGame();
     }
 
     this.checkScore = () => {
       let scoreArray = this.players.map( (player) => {
         player.calculateScore();
-        // console.log(player.score);
         return player.score;
       });
       return scoreArray;    
@@ -152,12 +148,9 @@ class Game {
     // The house is always player[0].
     // The house will continually draw cards until it has more than 18 or busts.
     this.houseTurn = () => {
-      // console.log("Starts here!!!");
-      // console.log(blackJackGames[gameNum].players[0].score);
       while(blackJackGames[gameNum].players[0].score < 18 && blackJackGames[gameNum].players[0].score !== "bust") {
         blackJackGames[gameNum].dealCards(0,0,1);
         blackJackGames[gameNum].players[0].calculateScore();
-        // console.log(blackJackGames[gameNum].players[0].score);
       }
     }
 
@@ -167,7 +160,6 @@ class Game {
       // let winner = "";
       let winners = [];
       let dealer = this.players[0].score;
-      // console.log(dealer);
       for(let i = 0; i < scoreArray.length; i++) {
         if(scoreArray[i] !== "bust") {
           if(scoreArray[i] > dealer || dealer === "bust") {
@@ -175,14 +167,9 @@ class Game {
           }
         }
       }
-      // console.log(winners);
 
       let winString = `${winners.length === 0 ? 'The house wins!' : `player(s) ${winners} win!!!`}`;
-
-      // console.log(winString);
       winDisplay.textContent = winString;
-
-
     }
 
   }
@@ -279,7 +266,6 @@ class Player {
     this.calculateScore = () => {
 
       // Reset the score to 0...
-      // console.log(`hand: ${this.hand.forEach((item) => {console.log(item)})}`);
       let allScores = [0,];
       let updatedScores;
       let concatScores;
@@ -287,27 +273,15 @@ class Player {
       this.hand.forEach((card) => {
         let temp = [];
         // purely to account for aces.
-        // console.log(allScores);
-        // ***
-        // There appears to be a bug here that I cannot reliably recreate.
-        // It seems to have disappeared after I separated the map and reduce into separate calls,
-        // But I have little idea as to why.
-        // Be wary of this section and keep an eye on it. 
-        // ***
           if(card.value === "A") {
-            // console.log("found an ace!");
 
             updatedScores = allScores.map((val) => {
               return [val + 1, val + 11];
             });
 
-            // console.log(updatedScores);
-
-
             concatScores = updatedScores.reduce((a,b) => {
               return a.concat(b);
             });
-            // console.log(concatScores);
 
             temp = concatScores;
 
@@ -318,7 +292,6 @@ class Player {
           }
 
           allScores = temp;
-          // console.log(allScores);
 
           scoreArray = allScores.filter((value) => {
             return value <= 21;
@@ -328,18 +301,14 @@ class Player {
           });
 
       });
-      // console.log(`scoreArray: ${scoreArray}`);
       this.score = scoreArray[0] || "bust";
-      // console.log(`player ${this.index ? this.index : "house"}: ${this.score}`);
 
       if(this.score > 21 || this.score === "bust") {
         // If they bust, immediately check and end their turn.
         this.score = "bust";
         this.hasTakenTurn = true;
         blackJackGames[gameNum].disablePlayer();
-        // console.log(`on turn: ${blackJackGames[gameNum].currentTurn}`);
       }
-      // console.log("Ends here!");
       this.updateDOMScore();
     }
 
@@ -373,7 +342,6 @@ class Player {
                       </section>`;
         });
         tempHTML += `</section>`;
-        // console.log(tempHTML);
         this.playerElement.children[0].children[0].innerHTML = tempHTML;
         this.playerElement.children[0].children[1].textContent = `Score: ${this.score}`;
       } else if(this.index === 0) {
@@ -382,9 +350,6 @@ class Player {
           });
           let tempHTML = "<section class='playerCards'>";
           cardDisplay.forEach((card, index) => {
-            console.log(card);
-            console.log("Updating DOM");
-            // console.log(blackJackGames[gameNum].players.length, blackJackGames[gameNum].currentTurn);
             if(index === 0 && (blackJackGames[gameNum].players.length !== blackJackGames[gameNum].currentTurn + 1)) {
               tempHTML += `<section class="cardImage hidden">
               hidden
@@ -396,7 +361,6 @@ class Player {
             }
           });
           tempHTML += `</section>`;
-          console.log(tempHTML);
           this.playerElement.children[0].children[0].innerHTML = tempHTML;
       }
 
@@ -411,21 +375,18 @@ const beginGame = () => {
   startButton.textContent = "Play Again?";
   let players = Number(playerCountInput.value);
   let decks = Number(deckCountInput.value);
-  // console.log(`${players} player(s) and ${decks} deck(s)! Let's go!`);
   // create game
   let blackJack = new Game();
   blackJackGames.push(blackJack);
   gameNum = blackJackGames.length - 1;
   // start game
   blackJackGames[gameNum].startGame(players, decks);
-  // console.log(blackJackGames[gameNum]);
   //TODO: move form out of the way
 
 }
 
 const hit = (event) => {
   playerInd = event.target.getAttribute('data-playerId');
-  // console.log(blackJackGames[gameNum].currentTurn);
   if(!blackJackGames[gameNum].players[playerInd].hasTakenTurn) {
 
     // "hit" a particular player.
@@ -458,7 +419,6 @@ const resetGame = () => {
 }
 
 const main = () => {
-  // document.querySelector('h1').textContent += '?';
 
 }
 
