@@ -72,7 +72,7 @@ class Game {
       });
       console.log(combinedDeck);
       this.mainDeck = new Deck();
-      this.mainDeck.deck = combinedDeck;
+      this.mainDeck.deck = [...combinedDeck];
       // let combinedDeck = this.decks.reduce((startDeck, addedDeck) => {
       //   console.log(startDeck.deck);
       //   // console.log(startDeck.deck, addedDeck.deck);
