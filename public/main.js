@@ -170,8 +170,27 @@ class Game {
         }
       }
 
+      this.returnBets(winners);
+
       let winString = `${winners.length === 0 ? 'The house wins!' : `player(s) ${winners} win!!!`}`;
       winDisplay.textContent = winString;
+
+      // 
+    }
+
+    this.returnBets = (winArray) => {
+      console.log(winArray);
+      this.players.forEach((player, index) => {
+        if(winArray.indexOf(index > -1)) {
+          player.currency += player.bet;
+          
+        } else {
+          player.currency -= player.bet;
+        }
+        console.log(player.currency);
+        // console.log(index);
+        // console.log(winArray.indexOf(index));
+      });
     }
 
   }
@@ -256,6 +275,10 @@ class Player {
     this.hasTakenTurn = false;
 
     this.isCurrentlyTurn = false;
+
+    this.bet = 5;
+
+    this.currency = 100;
 
     this.hit = (gameObj) => {
       if(this.hand.length < 5 && this.score !== "bust") {
