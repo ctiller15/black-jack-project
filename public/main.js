@@ -45,8 +45,8 @@ class Game {
     // The current list of decks
     this.decks = [];
 
-    // An array of all player bets.
-    this.bets = [];
+    // // An array of all player bets.
+    // this.bets = [];
 
     // Recording the players' turns.
     this.currentTurn = 0;
@@ -351,8 +351,7 @@ class Player {
                       ${this.index !== 0 ? `<form onSubmit="return false;">
                       <button type="button" onclick="hit(event)" data-playerId="${this.index}" disabled >Hit</button>
                       <button type="button" onclick="stay(event)" data-playerId="${this.index}" disabled >Stay</button>
-                      <input type="number" min=1 value=5 max=${this.currency}>
-                      <button type="button"></button>
+                      <input type="number" min=1 value=${this.bet} max=${this.currency} data-playerId="${this.index}" oninput="adjustBet(event)">
                     </form>` : ``}
                   </section>`;
       return tile;
@@ -441,9 +440,15 @@ const hit = (event) => {
 
 const stay = (event) => {
   playerInd = event.target.getAttribute('data-playerId');
-  console.log(playerInd);
+  // console.log(playerInd);
   currentGame.players[playerInd].hasTakenTurn = true;
   currentGame.checkGame();
+}
+
+const adjustBet = (event) => {
+  playerInd = event.target.getAttribute('data-playerId');
+  currentGame.players[playerInd].bet = Number(event.target.value);
+  console.log(currentGame.players);
 }
 
 const transferBets = () => {
@@ -457,22 +462,26 @@ const transferBets = () => {
     if(oldPlayers.length > newPlayers.length) {
       for(let i = 0; i < newPlayers.length; i++) {
         newPlayers[i].currency = oldPlayers[i].currency;
+        newPlayers[i].bet = oldPlayers[i].bet;
       }
     } else if(oldPlayers.length < newPlayers.length) {
       for(let i = 0; i < newPlayers.length; i++) {
         if(i < oldPlayers.length) {
           // If they're an old player, give them their old score.
           newPlayers[i].currency = oldPlayers[i].currency;
+          newPlayers[i].bet = oldPlayers[i].bet;
         } else {
           // If it's a new player, give them the default moolah!
           // *note, may be redundant. Check after you get it working.
           newPlayers[i].currency = 100;
+          newPlayers[i].bet = 5;
         }
       }
 
     } else {
       for(let i = 0; i < oldPlayers.length; i++) {
         newPlayers[i].currency = oldPlayers[i].currency;
+        newPlayers[i].bet = oldPlayers[i].bet;        
       }
     }
     console.log(newPlayers);
