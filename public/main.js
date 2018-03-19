@@ -45,6 +45,9 @@ class Game {
     // The current list of decks
     this.decks = [];
 
+    // The grand-daddy main deck
+    this.mainDeck;
+
     // // An array of all player bets.
     // this.bets = [];
 
@@ -56,6 +59,26 @@ class Game {
       for(var i = 0; i < count; i++) {
         this.decks.push(new Deck());
       }
+    }
+
+    this.combineDecks = () => {
+      // console.log(this.decks);
+      let pulledDecks = this.decks.map((deck) => {
+        return deck.deck;
+      });
+      console.log(pulledDecks);
+      let combinedDeck = pulledDecks.reduce((startDeck, addedDeck) => {
+        return startDeck.concat(addedDeck);
+      });
+      console.log(combinedDeck);
+      this.mainDeck = new Deck();
+      this.mainDeck.deck = combinedDeck;
+      // let combinedDeck = this.decks.reduce((startDeck, addedDeck) => {
+      //   console.log(startDeck.deck);
+      //   // console.log(startDeck.deck, addedDeck.deck);
+      //   return startDeck.deck.concat(addedDeck.deck);
+      // });
+      // console.log(combinedDeck);
     }
 
     this.createPlayers = (count) => {
@@ -99,14 +122,20 @@ class Game {
 
     // Chooses a player and deals cards to them from a given deck.
     this.dealCards = (playerNum, deckNum, count) => {
-      let temp = this.decks[deckNum].dealCards(count);
+      // console.log(this.mainDeck.dealCards(count));
+      // let temp = this.decks[deckNum].dealCards(count);
+      let temp = this.mainDeck.dealCards(count);
       this.players[playerNum].hand = this.players[playerNum].hand.concat(temp);
     }
 
     this.startGame = (playerCount, deckCount) => {
       this.createPlayers(playerCount);
       this.createDecks(deckCount);
-      this.shuffleDecks();
+      this.combineDecks();
+      // this.shuffleDecks();
+      // shuffle JUST main deck.
+      currentGame.mainDeck.shuffleDeck();
+      console.log(currentGame.mainDeck);
       for(let i = 0; i < playerCount + 1; i++) {
         this.dealCards(i, 0, 2);
       }
@@ -402,7 +431,7 @@ class Player {
 const beginGame = () => {
   resetGame();
   // Change button
-  startButton.textContent = "Play Again?";
+  startButton.textContent = "Play Again/Reset?";
   let players = Number(playerCountInput.value);
   let decks = Number(deckCountInput.value);
   // create game
@@ -462,6 +491,7 @@ const transferBets = () => {
     if(oldPlayers.length > newPlayers.length) {
       for(let i = 0; i < newPlayers.length; i++) {
         newPlayers[i].currency = oldPlayers[i].currency;
+        // TODO: Clamp bet value if currency is lower than current bet.
         newPlayers[i].bet = oldPlayers[i].bet;
       }
     } else if(oldPlayers.length < newPlayers.length) {
