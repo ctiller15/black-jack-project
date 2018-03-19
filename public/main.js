@@ -181,15 +181,13 @@ class Game {
     this.returnBets = (winArray) => {
       console.log(winArray);
       this.players.forEach((player, index) => {
-        if(winArray.indexOf(index > -1)) {
+        if(winArray.indexOf(index) > -1) {
           player.currency += player.bet;
           
         } else {
           player.currency -= player.bet;
         }
-        console.log(player.currency);
-        // console.log(index);
-        // console.log(winArray.indexOf(index));
+        console.log(index, player.currency);
       });
     }
 
@@ -407,6 +405,7 @@ const beginGame = () => {
   currentGame = blackJackGames[gameNum];
   // currentGame.startGame(players, decks);
   currentGame.startGame(players, decks);
+  transferBets();
   //TODO: move form out of the way
 
 }
@@ -435,6 +434,29 @@ const stay = (event) => {
   playerInd = event.target.getAttribute('data-playerId');
   currentGame.players[playerInd].hasTakenTurn = true;
   currentGame.checkGame();
+}
+
+const transferBets = () => {
+  if(gameNum > 0) {
+    console.log("Transferring bets to new game...");
+    // console.log(blackJackGames[gameNum - 1], currentGame);
+    let oldPlayers = blackJackGames[gameNum - 1].players;
+    let newPlayers = currentGame.players;
+    console.log(oldPlayers);
+    console.log(newPlayers);
+    if(oldPlayers.length > newPlayers.length) {
+      for(let i = 0; i < newPlayers.length; i++) {
+        newPlayers[i].currency = oldPlayers[i].currency;
+      }
+    } else if(oldPlayers.length < newPlayers.length) {
+
+    } else {
+      for(let i = 0; i < oldPlayers.length; i++) {
+        newPlayers[i].currency = oldPlayers[i].currency;
+      }
+    }
+    console.log(newPlayers);
+  }
 }
 
 // A function that resets the game screen
