@@ -449,6 +449,16 @@ const transferBets = () => {
         newPlayers[i].currency = oldPlayers[i].currency;
       }
     } else if(oldPlayers.length < newPlayers.length) {
+      for(let i = 0; i < newPlayers.length; i++) {
+        if(i < oldPlayers.length) {
+          // If they're an old player, give them their old score.
+          newPlayers[i].currency = oldPlayers[i].currency;
+        } else {
+          // If it's a new player, give them the default moolah!
+          // *note, may be redundant. Check after you get it working.
+          newPlayers[i].currency = 100;
+        }
+      }
 
     } else {
       for(let i = 0; i < oldPlayers.length; i++) {
