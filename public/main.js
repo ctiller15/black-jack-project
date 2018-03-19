@@ -64,8 +64,15 @@ class Game {
         newPlayer.index = i + 1;
         this.players.push(newPlayer);
         
-        gameScreen.innerHTML += newPlayer.createTile();
+        // gameScreen.innerHTML += newPlayer.createTile();
       }
+
+      transferBets();
+
+      for(var i = 1; i <= count; i++) {
+        gameScreen.innerHTML += this.players[i].createTile();
+      }
+
       // setting the index for the dealer.
       this.players[0].index = 0;
       houseDisplay.innerHTML += this.players[0].createTile();
@@ -341,9 +348,11 @@ class Player {
                         <section class="player-score">
                         </section>
                       </section>
-                      ${this.index !== 0 ? `<form>
+                      ${this.index !== 0 ? `<form onSubmit="return false;">
                       <button type="button" onclick="hit(event)" data-playerId="${this.index}" disabled >Hit</button>
                       <button type="button" onclick="stay(event)" data-playerId="${this.index}" disabled >Stay</button>
+                      <input type="number" min=1 value=5 max=${this.currency}>
+                      <button type="button"></button>
                     </form>` : ``}
                   </section>`;
       return tile;
@@ -405,7 +414,7 @@ const beginGame = () => {
   currentGame = blackJackGames[gameNum];
   // currentGame.startGame(players, decks);
   currentGame.startGame(players, decks);
-  transferBets();
+  // transferBets();
   //TODO: move form out of the way
 
 }
@@ -432,6 +441,7 @@ const hit = (event) => {
 
 const stay = (event) => {
   playerInd = event.target.getAttribute('data-playerId');
+  console.log(playerInd);
   currentGame.players[playerInd].hasTakenTurn = true;
   currentGame.checkGame();
 }
